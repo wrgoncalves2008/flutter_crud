@@ -1,30 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crud/controllers/ControllerUsuarios.dart';
+import 'package:flutter_crud/controllers/controller_usuarios.dart';
 import 'package:flutter_crud/model/usuario.dart';
 import 'package:provider/provider.dart';
 
-class ViewCadastroUsuario extends StatelessWidget {
-  ViewCadastroUsuario({Key? key}) : super(key: key);
+class ViewCadastroUsuario extends StatefulWidget {
+  const ViewCadastroUsuario({Key? key}) : super(key: key);
 
-  late Usuario _usuario;
+  @override
+  State<ViewCadastroUsuario> createState() => _ViewCadastroUsuarioState();
+}
 
-  void _loadUsuario(Usuario? user) {
-    if (user == null) {
-      _usuario = Usuario();
-    } else {
-      _usuario = user;
-    }
+class _ViewCadastroUsuarioState extends State<ViewCadastroUsuario> {
+  late Usuario? _usuario;
+
+  late TextEditingController txtNome;
+  late TextEditingController txtEmail;
+  late TextEditingController txtAvatar;
+
+  late FocusNode txtFocusNome;
+  late FocusNode txtFocusEmail;
+  late FocusNode txtFocusAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+
+    txtFocusNome = FocusNode();
+    txtFocusEmail = FocusNode();
+    txtFocusAvatar = FocusNode();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    print('ondid');
+
+    _usuario = ModalRoute.of(context)?.settings.arguments as Usuario?;
+    _usuario ??= Usuario(id: '', nome: '', email: '', avatarUrl: '');
+
+    txtNome = TextEditingController(text: _usuario?.nome);
+    txtEmail = TextEditingController(text: _usuario?.email);
+    txtAvatar = TextEditingController(text: _usuario?.avatarUrl);
+  }
+
+  @override
+  void dispose() {
+    txtNome.dispose();
+    txtEmail.dispose();
+    txtAvatar.dispose();
+
+    txtFocusAvatar.dispose();
+    txtFocusEmail.dispose();
+    txtFocusNome.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final _form = GlobalKey<FormState>();
-    TextEditingController txtNome = TextEditingController();
-    TextEditingController txtEmail = TextEditingController();
-    TextEditingController txtAvatar = TextEditingController();
     final controller = Provider.of<ControllerUsuarios>(context, listen: false);
-
-    _loadUsuario(ModalRoute.of(context)?.settings.arguments as Usuario);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,14 +68,20 @@ class ViewCadastroUsuario extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              final bool isValid = _form.currentState?.validate() ?? false;
+              final isValid = _form.currentState?.validate();
 
-              if (isValid) {
-                controller.add(Usuario(
-                    id: '',
-                    nome: txtNome.text,
-                    email: txtEmail.text,
-                    avatarUrl: txtAvatar.text));
+              if (isValid != null && isValid != false) {
+                _form.currentState?.save();
+
+                if (_usuario!.id!.isEmpty) {
+                  controller.add(Usuario(
+                      id: '',
+                      nome: _usuario!.nome,
+                      email: _usuario!.email,
+                      avatarUrl: _usuario!.avatarUrl));
+                } else {
+                  controller.update(_usuario!);
+                }
 
                 Navigator.of(context).pop();
               }
@@ -55,34 +97,51 @@ class ViewCadastroUsuario extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                initialValue: _usuario.nome,
-                decoration: const InputDecoration(labelText: 'Nome do usuário'),
-                controller: txtNome,
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Informe o nome do Usuário';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
+                  autofocus: true,
+                  focusNode: txtFocusNome,
+                  decoration:
+                      const InputDecoration(labelText: 'Nome do usuário'),
+                  controller: txtNome,
+                  validator: (value) {
+                    if (value?.isEmpty ?? true) {
+                      return 'Informe o nome do Usuário';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onSaved: (value) {
+                    _usuario!.nome = value ?? '';
+                  },
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(txtFocusEmail);
+                  }),
               TextFormField(
-                initialValue: _usuario.email,
-                decoration: const InputDecoration(labelText: 'E-mail'),
-                controller: txtEmail,
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return 'Informe um e-mail para o usuário';
-                  } else {
-                    return null;
-                  }
-                },
-              ),
+                  decoration: const InputDecoration(labelText: 'E-mail'),
+                  focusNode: txtFocusEmail,
+                  controller: txtEmail,
+                  validator: (value) {
+                    if (value?.isEmpty ?? true) {
+                      return 'Informe um e-mail para o usuário';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onSaved: (value) {
+                    _usuario!.email = value ?? '';
+                  },
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(txtFocusAvatar);
+                  }),
               TextFormField(
-                initialValue: _usuario.avatarUrl,
-                decoration: const InputDecoration(labelText: 'Url do Avatar'),
-                controller: txtAvatar,
-              )
+                  decoration: const InputDecoration(labelText: 'Url do Avatar'),
+                  focusNode: txtFocusAvatar,
+                  controller: txtAvatar,
+                  onSaved: (value) {
+                    _usuario!.avatarUrl = value ?? '';
+                  },
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(txtFocusNome);
+                  })
             ],
           ),
         ),

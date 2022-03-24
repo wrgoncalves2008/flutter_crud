@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crud/controllers/ControllerUsuarios.dart';
-import 'package:flutter_crud/routes/AppRoutes.dart';
+import 'package:flutter_crud/controllers/controller_usuarios.dart';
+import 'package:flutter_crud/routes/app_routes.dart';
 import 'package:flutter_crud/views/view_lista_usuarios.dart';
 import 'package:flutter_crud/views/view_usuario.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           AppRoutes.home: (context) => const ViewListaUsuarios(),
-          AppRoutes.usuario: (context) => ViewCadastroUsuario()
+          AppRoutes.usuario: (context) => const ViewCadastroUsuario()
         },
       ),
     );

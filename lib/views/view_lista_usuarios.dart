@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crud/componentes/UsuarioTile.dart';
-import 'package:flutter_crud/controllers/ControllerUsuarios.dart';
-import 'package:flutter_crud/routes/AppRoutes.dart';
+import 'package:flutter_crud/componentes/usuario_tile.dart';
+import 'package:flutter_crud/controllers/controller_usuarios.dart';
+import 'package:flutter_crud/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
 class ViewListaUsuarios extends StatelessWidget {
@@ -11,7 +11,6 @@ class ViewListaUsuarios extends StatelessWidget {
   Widget build(BuildContext context) {
     //Pode ser utilizado da forma abaixo também.
     //final listaUsuarios = Provider.of<ControllerUsuarios>(context);
-
     final ControllerUsuarios listaUsuarios = Provider.of(context);
 
     return Scaffold(

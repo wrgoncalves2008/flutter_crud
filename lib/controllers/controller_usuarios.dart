@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_crud/data/fake_usuario.dart';
+
 import 'package:flutter_crud/model/usuario.dart';
 
 class ControllerUsuarios with ChangeNotifier {
-  final Map<String, Usuario> _usuarios = {...fakeUsuarios};
+  final Map<String, Usuario> _usuarios = {}; // = {...fakeUsuarios};
 
   List<Usuario> get all {
     return [..._usuarios.values];
