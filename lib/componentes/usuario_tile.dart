@@ -31,7 +31,7 @@ class UsuarioTile extends StatelessWidget {
       title: Text(usuario.nome),
       subtitle: Text(usuario.email),
       trailing: SizedBox(
-        width: 90,
+        width: 100,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
