@@ -34,8 +34,6 @@ class _ViewCadastroUsuarioState extends State<ViewCadastroUsuario> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    print('ondid');
-
     _usuario = ModalRoute.of(context)?.settings.arguments as Usuario?;
     _usuario ??= Usuario(id: '', nome: '', email: '', avatarUrl: '');
 
